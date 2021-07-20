@@ -1,0 +1,84 @@
+
+h1{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 80px;
+}
+
+.difficulty{
+    visibility: visible;
+}
+
+.diffbtn1{
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    height: 100px;
+    width: 200px;
+    margin-top: -150px;
+    margin-left: -350px;
+    font-size: 25px;
+    font-weight: bold;
+    font-style: italic;
+    z-index: 1001;
+    background-color: black;
+    color: green;
+    border-style: none;
+}
+
+.diffbtn2{
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    height: 100px;
+    width: 200px;
+    margin-top: -150px;
+    margin-left: -350px;
+    font-size: 25px;
+    font-weight: bold;
+    font-style: italic;
+    z-index: 1001;
+    background-color: black;
+    color: red;
+    border-style: none;
+}
+
+.gamebtn{
+    height: 200px;
+    width: 200px;
+    font-size: 75px;
+    font-style: italic;
+    color:brown;
+    z-index: 1000;
+    background-color: gray;
+}
+
+.game{
+    visibility: hidden;
+}
+
+.reload{
+    font-size: 25px;
+    height: 85px;
+    width: 225px;
+    margin-top: 10px;
+    color: lightgreen;
+    background-color: black;
+    border-style: none;
+}
+
+.restart:hover{
+    background: lightgray;
+}
+
+.game{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -280px;
+    margin-left: -280px;
+}
+
+#black_background{
+    background-color: black;
+}
