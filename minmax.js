@@ -4,6 +4,8 @@ var field = [
     [0,0,0]
 ]
 
+// TODO - push to "every move" array @minimax
+
 
 var values = [];
 var states = [];
@@ -152,6 +154,8 @@ function miniMax(tmp_field, player)
                     tmp_field[i][j] = 2;
                     var score = miniMax(tmp_field, true);
                     console.log(tmp_field+" ");
+                    
+                    
                     if(score < bestScore)
                     {
                         bestScore = score;
