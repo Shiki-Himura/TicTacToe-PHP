@@ -4,9 +4,11 @@ var field = [
     [0,0,0]
 ]
 
-var state = [];
 
+var values = [];
+var states = [];
 var difficulty;
+
 
 function setDifficulty(diff)
 {
@@ -35,26 +37,33 @@ function buttonClick(e, x, y)
     e.target.disabled = true;
     field[x][y] = 1;
     player_one = false;
-
     
+    //getBoardState();
     bestMove(field);
     render(field);
     validate(field);
     winnerAlert(field);
+    //sendState(states);
 }
 
-function onBtnClick()
+function getBoardState()
+{
+    const xmlhttp = new XMLHttpRequest();    
+
+    xmlhttp.onreadystatechange = function()
+    {
+        values.push(this.responseText);
+    }
+    
+    xmlhttp.open("GET", "retrieve.php", true);
+    xmlhttp.send();
+}
+
+function sendState(tempfield)
 {
     const xmlhttp = new XMLHttpRequest();
-    xmlhttp.onload = function()
-    {
-        state.push(this.responseText);
-        console.log(state);
-    }
-
-    //TODO - change boardstate onclick
-    //TODO - send new boardstate to server and save to column via query
-    xmlhttp.open("GET", "logic.php", true);
+    
+    xmlhttp.open("GET", "upload.php?state="+tempfield, true);
     xmlhttp.send();
 }
 
@@ -71,7 +80,7 @@ function bestMove(tmp_field)
             if(tmp_field[i][j] == 0)
             {
                 tmp_field[i][j] = 2;
-
+                
                 var score = miniMax(tmp_field, true);
                 if(score < bestScore)
                 {
@@ -119,8 +128,8 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {
                     tmp_field[i][j] = 1;
-                    var score = miniMax(tmp_field, false);
 
+                    var score = miniMax(tmp_field, false);                    
                     if(score > bestScore)
                     {
                         bestScore = score;
@@ -142,12 +151,13 @@ function miniMax(tmp_field, player)
                 {
                     tmp_field[i][j] = 2;
                     var score = miniMax(tmp_field, true);
-                    
+                    console.log(tmp_field+" ");
                     if(score < bestScore)
                     {
                         bestScore = score;
                     }
                     tmp_field[i][j] = 0;
+
                 }
             }
         }
@@ -180,12 +190,7 @@ function getRandomNumber(min, max)
 
 function render(tmp_field)
 {
-    var newArr = [];
-
-    for(var i = 0; i < tmp_field.length; i++)
-    {
-        newArr = newArr.concat(tmp_field[i]);
-    }
+    var newArr = concatField(tmp_field);
 
     var b = document.getElementsByClassName("gamebtn");
     for(var i = 0; i < newArr.length; i++)
@@ -196,6 +201,17 @@ function render(tmp_field)
             b[i].disabled = true;
         }
     }
+}
+
+function concatField(tmp_field)
+{
+    var newArr = [];
+
+    for(var i = 0; i < tmp_field.length; i++)
+    {
+        newArr = newArr.concat(tmp_field[i]);
+    }
+    return newArr;
 }
 
 function validate(tmp_field)

@@ -2,17 +2,21 @@
 
 $connection = new mysqli('localhost', 'root', '', 'db_test');
 
+//$a = $_POST["weight"];
+$b = $_REQUEST["state"];
+
 if(mysqli_connect_error())
 {
     echo "Database connection failed";
     exit;
 }
 
-$sql_query = 'INSERT INTO `game_state`(`BoardValues`, `BoardState`) VALUES ('$_REQUEST["INSERTVARIABLE"]','$_REQUEST["INSERTVARIABLE"]')';
+$sql_query = "INSERT INTO `game_state`(`BoardState`) VALUES ('$b')";
 
 $result = $connection->query($sql_query);
 
-//check if BoardState AND Values need to be passed to the server 
+
+//send possible boardstates to server and initialise a base
 
 
 ?>

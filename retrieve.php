@@ -12,13 +12,17 @@ $sql_query = 'SELECT* FROM game_state';
 
 $result = $connection->query($sql_query);
 
+
+$temparray = array();
 while($row = $result->fetch_assoc())
 {
-    $temp = $row["BoardState"];
+    $temparray[] = $row["Stateweight"]." ".$row["BoardState"];
+    $trimmed_array = array_map('trim', $temparray);
+    foreach ($trimmed_array as $value) 
+    {
+        echo $value;
+    }
 }
-
-echo $temp;
-
 
 
 ?>
