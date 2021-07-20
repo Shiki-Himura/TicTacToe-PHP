@@ -53,7 +53,7 @@ function onBtnClick()
     }
 
     //TODO - change boardstate onclick
-    //TODO - send new boardstate to server and save to column
+    //TODO - send new boardstate to server and save to column via query
     xmlhttp.open("GET", "logic.php", true);
     xmlhttp.send();
 }

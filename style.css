@@ -21,10 +21,11 @@ h1{
     font-weight: bold;
     font-style: italic;
     z-index: 1001;
-    background-color: black;
+    background-color:slategrey;
     color: green;
-    border-style: none;
+    border-style: inset;
 }
+
 
 .diffbtn2{
     position: absolute;
@@ -38,9 +39,17 @@ h1{
     font-weight: bold;
     font-style: italic;
     z-index: 1001;
-    background-color: black;
+    background-color: slategrey;
     color: red;
-    border-style: none;
+    border-style: inset;
+}
+
+.diffbtn1:hover{
+    background-color: grey;
+}
+
+.diffbtn2:hover{
+    background-color: grey;
 }
 
 .gamebtn{
@@ -79,6 +88,3 @@ h1{
     margin-left: -280px;
 }
 
-#black_background{
-    background-color: black;
-}
