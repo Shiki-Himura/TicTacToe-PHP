@@ -6,17 +6,23 @@ var field = [
 
 // TODO - convert "Set" to "array" @minimax
 
-var newfield = [];
 var values = [];
-var stateset = [];
-var statearray = [];
+var stateset = new Set();
+var uniquestates = [];
 
 var difficulty;
 
 miniMax(field,1);
-stateset = [new Set(newfield)];
+uniquestates = Array.from(stateset);
 
-console.log(stateset);
+console.log(uniquestates);
+
+function mergeArrays(array)
+{
+    var temparray = [];
+    array.forEach(element => temparray.push(element));
+    return temparray;
+}
 
 
 
@@ -33,9 +39,10 @@ function checkUnique(array)
                     console.log("duplicate");
                 }
             }
+            console.log("im here");
         }
     }
-    console.log("unique");    
+    console.log("unique");
 }
 
 function setDifficulty(diff)
@@ -160,6 +167,7 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {
                     tmp_field[i][j] = 1;
+                    
                     var score = miniMax(tmp_field, false);                    
                     if(score > bestScore)
                     {
@@ -167,6 +175,7 @@ function miniMax(tmp_field, player)
                     }
                     tmp_field[i][j] = 0;
                 }
+                
             }
         }
         return bestScore;
@@ -179,17 +188,16 @@ function miniMax(tmp_field, player)
             for(var j = 0; j < 3; j++)
             {
                 if(tmp_field[i][j] == 0)
-                {
-                    newfield.push(concatField(tmp_field));
-
+                {                    
+                    stateset.add(concatField(tmp_field).toString());
                     tmp_field[i][j] = 2;
+                    
                     var score = miniMax(tmp_field, true);
                     if(score < bestScore)
                     {
                         bestScore = score;
                     }
                     tmp_field[i][j] = 0;
-
                 }
             }
         }
