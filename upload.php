@@ -2,8 +2,8 @@
 
 $connection = new mysqli('localhost', 'root', '', 'db_test');
 
-//$a = $_POST["weight"];
-$b = $_REQUEST["state"];
+$a = $_REQUEST["state"];
+$b = $_REQUEST["weight"];
 
 if(mysqli_connect_error())
 {
@@ -11,7 +11,7 @@ if(mysqli_connect_error())
     exit;
 }
 
-$sql_query = "INSERT INTO `game_state`(`BoardState`) VALUES ('$b')";
+$sql_query = "INSERT INTO `game_state`(`BoardState`, `Stateweight`) VALUES ('$a','$b')";
 
 $result = $connection->query($sql_query);
 

@@ -4,13 +4,39 @@ var field = [
     [0,0,0]
 ]
 
-// TODO - push to "every move" array @minimax
+// TODO - convert "Set" to "array" @minimax
 
-
+var newfield = [];
 var values = [];
-var states = [];
+var stateset = [];
+var statearray = [];
+
 var difficulty;
 
+miniMax(field,1);
+stateset = [new Set(newfield)];
+
+console.log(stateset);
+
+
+
+function checkUnique(array)
+{
+    for (var i = 0; i < array.length; i++)
+    {
+        for (var j = 0; j < array.length; j++)
+        {
+            if (i != j)
+            {
+                if (array[i] == array[j])
+                {
+                    console.log("duplicate");
+                }
+            }
+        }
+    }
+    console.log("unique");    
+}
 
 function setDifficulty(diff)
 {
@@ -40,19 +66,17 @@ function buttonClick(e, x, y)
     field[x][y] = 1;
     player_one = false;
     
-    //getBoardState();
     bestMove(field);
     render(field);
     validate(field);
     winnerAlert(field);
-    //sendState(states);
 }
 
 function getBoardState()
 {
     const xmlhttp = new XMLHttpRequest();    
 
-    xmlhttp.onreadystatechange = function()
+    xmlhttp.onload = function()
     {
         values.push(this.responseText);
     }
@@ -61,12 +85,18 @@ function getBoardState()
     xmlhttp.send();
 }
 
-function sendState(tempfield)
+function sendState(states, weight)
 {
     const xmlhttp = new XMLHttpRequest();
     
-    xmlhttp.open("GET", "upload.php?state="+tempfield, true);
+    xmlhttp.open("GET", "upload.php?state="+states+"weight="+weight, true);
     xmlhttp.send();
+}
+
+function evaluateWeight(array)
+{
+    var weightarray = [];
+    
 }
 
 function bestMove(tmp_field)
@@ -81,9 +111,9 @@ function bestMove(tmp_field)
         {
             if(tmp_field[i][j] == 0)
             {
-                tmp_field[i][j] = 2;
-                
-                var score = miniMax(tmp_field, true);
+                tmp_field[i][j] = 2;                
+
+                var score = miniMax(tmp_field, true);                
                 if(score < bestScore)
                 {
                     bestScore = score;
@@ -130,7 +160,6 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {
                     tmp_field[i][j] = 1;
-
                     var score = miniMax(tmp_field, false);                    
                     if(score > bestScore)
                     {
@@ -151,11 +180,10 @@ function miniMax(tmp_field, player)
             {
                 if(tmp_field[i][j] == 0)
                 {
+                    newfield.push(concatField(tmp_field));
+
                     tmp_field[i][j] = 2;
                     var score = miniMax(tmp_field, true);
-                    console.log(tmp_field+" ");
-                    
-                    
                     if(score < bestScore)
                     {
                         bestScore = score;
