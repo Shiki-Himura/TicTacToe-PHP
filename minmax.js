@@ -4,16 +4,18 @@ var field = [
     [0,0,0]
 ]
 
-// TODO - upload unique boardstates to server (~760)
+// TODO - upload unique boardstates with added weight to server
 
 var values = [];
 var stateset = new Set();
+var stateWeight = [];
 var uniquestates = [];
 
 var difficulty;
 
-miniMax(field,1);
+miniMax(field,true);
 uniquestates = Array.from(stateset);
+setStateweight(uniquestates);
 
 console.log(uniquestates);
 
@@ -23,8 +25,6 @@ function mergeArrays(array)
     array.forEach(element => temparray.push(element));
     return temparray;
 }
-
-
 
 function checkUnique(array)
 {
@@ -100,10 +100,9 @@ function sendState(states, weight)
     xmlhttp.send();
 }
 
-function evaluateWeight(array)
+function setStateweight(array)
 {
-    var weightarray = [];
-    
+
 }
 
 function bestMove(tmp_field)
@@ -167,6 +166,7 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {
                     tmp_field[i][j] = 1;
+                    stateset.add(concatField(tmp_field).toString());
                     
                     var score = miniMax(tmp_field, false);                    
                     if(score > bestScore)
@@ -189,7 +189,6 @@ function miniMax(tmp_field, player)
             {
                 if(tmp_field[i][j] == 0)
                 {                    
-                    stateset.add(concatField(tmp_field).toString());
                     tmp_field[i][j] = 2;
                     
                     var score = miniMax(tmp_field, true);
