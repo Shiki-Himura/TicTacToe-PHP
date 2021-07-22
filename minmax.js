@@ -1,3 +1,4 @@
+
 var field = [
     [0,0,0],
     [0,0,0],
@@ -10,21 +11,27 @@ var values = [];
 var stateset = new Set();
 var stateWeight = [];
 var uniquestates = [];
-
 var difficulty;
+var tempstring = "";
 
 miniMax(field,true);
 uniquestates = Array.from(stateset);
-setStateweight(uniquestates);
+getStateweight(uniquestates);
+stringifyArray(uniquestates);
+stringifyArray(stateWeight);
+sendArrayElement(stateWeight);
+
+// TODO - get datasets onto server
+
+/*var JSONstring = JSON.stringify( uniquestates );
+console.log(JSONstring);
+$.ajax({ 
+    type: "POST", 
+    url: "upload.php", 
+    data: {states : JSONstring}
+});*/ 
 
 console.log(uniquestates);
-
-function mergeArrays(array)
-{
-    var temparray = [];
-    array.forEach(element => temparray.push(element));
-    return temparray;
-}
 
 function checkUnique(array)
 {
@@ -92,17 +99,44 @@ function getBoardState()
     xmlhttp.send();
 }
 
-function sendState(states, weight)
+function stringifyArray(array)
+{
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        tempstring += element;
+        tempstring += " ";
+    }
+}
+
+function sendData(weight, state)
 {
     const xmlhttp = new XMLHttpRequest();
-    
-    xmlhttp.open("GET", "upload.php?state="+states+"weight="+weight, true);
+
+    xmlhttp.onreadystatechange = function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            console.log(this.responseText);
+        }
+    }
+    xmlhttp.open("POST", "upload.php?state="+state+"weight="+weight, false);
     xmlhttp.send();
 }
 
-function setStateweight(array)
+function sendArrayElement(array1)
 {
+    for (let i = 0; i < array1.length; i++) 
+    {
+        sendData(array1[i]);
+    }
+}
 
+function getStateweight(array)
+{
+    for(var i = 0; i < array.length; i++)
+    {
+        stateWeight.push(array[i].replaceAll(/0/g, "5").replaceAll(/1/g, "0").replaceAll(/2/g, "0"));
+    }
 }
 
 function bestMove(tmp_field)
@@ -190,7 +224,7 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {                    
                     tmp_field[i][j] = 2;
-                    
+
                     var score = miniMax(tmp_field, true);
                     if(score < bestScore)
                     {
