@@ -4,7 +4,7 @@ var field = [
     [0,0,0]
 ]
 
-// TODO - convert "Set" to "array" @minimax
+// TODO - upload unique boardstates to server (~760)
 
 var values = [];
 var stateset = new Set();
