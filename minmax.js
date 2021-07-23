@@ -4,19 +4,30 @@ var field = [
     [0,0,0],
     [0,0,0]
 ]
-
-// TODO - upload unique boardstates with added weight to server
 var values = [];
-var stateset = new Set();
-var stateWeight = [];
-var uniquestates = [];
 var difficulty;
-var tempstring = "";
-
-//miniMax(field,true);
-// TODO - get datasets onto server
+var response = "";
+//var stateWeight = [];
+//var stateset = new Set();
+//var uniquestates = [];
+//var tempstring = "";
 //sendData();
 
+function GetMove(field)
+{
+    const xmlhttp = new XMLHttpRequest();
+    
+    xmlhttp.onload = function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            response = this.responseText;
+            console.log(response);
+        }
+    }
+    xmlhttp.open("GET", "computermove.php?field="+field, false);
+    xmlhttp.send();
+}
 
 function checkUnique(array)
 {
@@ -65,6 +76,7 @@ function buttonClick(e, x, y)
     field[x][y] = 1;
     player_one = false;
     
+    GetMove(field);
     bestMove(field);
     render(field);
     validate(field);
@@ -180,7 +192,7 @@ function miniMax(tmp_field, player)
                 if(tmp_field[i][j] == 0)
                 {
                     tmp_field[i][j] = 1;
-                    stateset.add(concatField(tmp_field).toString());
+                    //stateset.add(concatField(tmp_field).toString());
                     
                     var score = miniMax(tmp_field, false);                    
                     if(score > bestScore)
