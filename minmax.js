@@ -23,7 +23,6 @@ function GetMove(field)
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
             response = this.responseText;
-            console.log(response);
         }
     }
     xmlhttp.open("GET", "computermove.php?field="+field, false);
