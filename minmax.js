@@ -6,7 +6,6 @@ var field = [
 ]
 
 // TODO - upload unique boardstates with added weight to server
-
 var values = [];
 var stateset = new Set();
 var stateWeight = [];
@@ -14,24 +13,10 @@ var uniquestates = [];
 var difficulty;
 var tempstring = "";
 
-miniMax(field,true);
-uniquestates = Array.from(stateset);
-getStateweight(uniquestates);
-stringifyArray(uniquestates);
-stringifyArray(stateWeight);
-sendArrayElement(stateWeight);
-
+//miniMax(field,true);
 // TODO - get datasets onto server
+//sendData();
 
-/*var JSONstring = JSON.stringify( uniquestates );
-console.log(JSONstring);
-$.ajax({ 
-    type: "POST", 
-    url: "upload.php", 
-    data: {states : JSONstring}
-});*/ 
-
-console.log(uniquestates);
 
 function checkUnique(array)
 {
@@ -99,28 +84,23 @@ function getBoardState()
     xmlhttp.send();
 }
 
-function stringifyArray(array)
+function sendData()
 {
-    for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        tempstring += element;
-        tempstring += " ";
-    }
-}
-
-function sendData(weight, state)
-{
-    const xmlhttp = new XMLHttpRequest();
-
-    xmlhttp.onreadystatechange = function()
+    stateset.forEach(function(val)
     {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        const xmlhttp = new XMLHttpRequest();
+    
+        xmlhttp.onreadystatechange = function()
         {
-            console.log(this.responseText);
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                console.log(this.responseText);
+            }
         }
-    }
-    xmlhttp.open("POST", "upload.php?state="+state+"weight="+weight, false);
-    xmlhttp.send();
+        var value = val;
+        xmlhttp.open("GET", "upload.php?set="+value, false);
+        xmlhttp.send();
+    })
 }
 
 function sendArrayElement(array1)
