@@ -5,6 +5,20 @@ var field = [
     [0,0,0],
     [0,0,0]
 ]
+
+var moveArray = [
+    {i:0, j:0},
+    {i:0, j:1},
+    {i:0, j:2},
+    {i:1, j:0},
+    {i:1, j:1},
+    {i:1, j:2},
+    {i:2, j:0},
+    {i:2, j:1},
+    {i:2, j:2}
+];
+
+var weight = [];
 var values = [];
 var difficulty;
 var response = "";
@@ -13,6 +27,31 @@ var response = "";
 //var uniquestates = [];
 //var tempstring = "";
 //sendData();
+
+function GetRandomMove(moveList)
+{
+    var min = 0;
+    var max = moveList.length - 1;
+    var move = moveList[getRandomNumber(min, max)];
+    return move;
+}
+
+function InitializeMoveList(weight)
+{
+    var a = 0;
+    var moveList = [];
+    
+    for(var i = 0; i < weight.length; i++)
+    {
+        for(var j = weight[i]; j > 0; j--)
+        {
+            moveList.push(moveArray[a]);
+        }
+        a++;
+    }
+    console.log(moveList);
+    return moveList;
+}
 
 function GetMove(field)
 {
@@ -23,6 +62,7 @@ function GetMove(field)
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
             response = this.responseText;
+            weight = response.split("");
         }
     }
     xmlhttp.open("GET", "computermove.php?field="+field, false);
@@ -77,6 +117,8 @@ function buttonClick(e, x, y)
     player_one = false;
     
     GetMove(field);
+    InitializeMoveList(weight);
+
     bestMove(field);
     render(field);
     validate(field);
@@ -340,6 +382,7 @@ function winnerAlert(field)
 function getRandomIndex(field)
 {
     var array = getPossibleMoves(field);
+
     min = 0;
     max = array.length - 1;
 
