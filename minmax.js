@@ -425,6 +425,7 @@ function winnerAlert(field)
             const i = btn[index];
             i.disabled = true;
         }
+        console.log(stateWeight);
     }
     else if(validate(field) == 0)
     {
