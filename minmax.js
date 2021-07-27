@@ -198,7 +198,7 @@ function Replace(array)
         temp.push(parseInt(array[i]));
     }
     stateWeight.push(temp);
-    console.log(stateWeight);
+    console.log(stateWeight); // weight off current board, after player did their move
 }
 
 function MakeMove(tmp_field)
@@ -425,7 +425,6 @@ function winnerAlert(field)
             const i = btn[index];
             i.disabled = true;
         }
-        console.log(stateWeight);
     }
     else if(validate(field) == 0)
     {
