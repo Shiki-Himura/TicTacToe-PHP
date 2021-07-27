@@ -25,6 +25,7 @@ var values = [];
 var difficulty;
 var response = "";
 var stateWeight = [];
+var updatedWeight = [];
 //var stateset = new Set();
 //var uniquestates = [];
 //var tempstring = "";
@@ -424,7 +425,6 @@ function winnerAlert(field)
             const i = btn[index];
             i.disabled = true;
         }
-
     }
     else if(validate(field) == 0)
     {
