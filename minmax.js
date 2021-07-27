@@ -18,11 +18,13 @@ var moveArray = [
     {i:2, j:2}
 ];
 
+var chosenMoves = [];
+var moveList = [];
 var weight = [];
 var values = [];
 var difficulty;
 var response = "";
-//var stateWeight = [];
+var stateWeight = [];
 //var stateset = new Set();
 //var uniquestates = [];
 //var tempstring = "";
@@ -38,8 +40,8 @@ function GetRandomMove(moveList)
 
 function InitializeMoveList(weight)
 {
+    moveList = [];
     var a = 0;
-    var moveList = [];
     
     for(var i = 0; i < weight.length; i++)
     {
@@ -48,12 +50,11 @@ function InitializeMoveList(weight)
             moveList.push(moveArray[a]);
         }
         a++;
-    }
-    console.log(moveList);
+    }    
     return moveList;
 }
 
-function GetMove(field)
+function GetWeight(field)
 {
     const xmlhttp = new XMLHttpRequest();
     
@@ -113,16 +114,21 @@ function buttonClick(e, x, y)
     var player_one = true;
     e.target.textContent = "X";
     e.target.disabled = true;
-    field[x][y] = 1;
+    field[x][y] = 1;    
     player_one = false;
     
-    GetMove(field);
+    GetWeight(concatField(field));    
     InitializeMoveList(weight);
+    MakeMove(field);
+    console.log(chosenMoves);
+    console.log(weight);
+    Replace(weight);
+    console.log(stateWeight);
 
-    bestMove(field);
-    render(field);
-    validate(field);
+    //bestMove(field);
     winnerAlert(field);
+    render(field);
+    //validate(field);
 }
 
 function getBoardState()
@@ -152,7 +158,26 @@ function sendData()
             }
         }
         var value = val;
-        xmlhttp.open("GET", "upload.php?set="+value, false);
+        xmlhttp.open("GET", "upload.php?field="+value, false);
+        xmlhttp.send();
+    })
+}
+
+function UpdateData()
+{
+    stateset.forEach(function(val)
+    {
+        const xmlhttp = new XMLHttpRequest();
+    
+        xmlhttp.onreadystatechange = function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                console.log(this.responseText);
+            }
+        }
+        var value = val;
+        xmlhttp.open("GET", "updatedb.php?field="+value, false);
         xmlhttp.send();
     })
 }
@@ -165,15 +190,27 @@ function sendArrayElement(array1)
     }
 }
 
-function getStateweight(array)
+function Replace(array)
 {
+    var temp = "";
     for(var i = 0; i < array.length; i++)
     {
-        stateWeight.push(array[i].replaceAll(/0/g, "5").replaceAll(/1/g, "0").replaceAll(/2/g, "0"));
+        temp += (array[i].replaceAll(/,/g, "").replaceAll(/" "/g, ""));
     }
+    stateWeight.push(temp);
 }
 
-function bestMove(tmp_field)
+function MakeMove(tmp_field)
+{
+    var rndMove = GetRandomMove(moveList);
+    if(validate(tmp_field) == 2)
+    {
+        tmp_field[rndMove.i][rndMove.j] = 2;
+        chosenMoves.push(concatField(tmp_field));        
+    }    
+}
+
+/*function bestMove(tmp_field)
 {
     var rnd = getRandomNumber(0,100);
     var bestScore = +Infinity
@@ -200,14 +237,19 @@ function bestMove(tmp_field)
 
     if(rnd < difficulty)
     {
-        var rndMove = getRandomIndex(tmp_field);
+        //var rndMove = getRandomIndex(tmp_field);
+        var rndMove = GetRandomMove(moveList);
         tmp_field[rndMove.i][rndMove.j] = 2;
+        chosenMoves.push(rndMove);
+        console.log("random");
     }
     else
     {
         tmp_field[move.i][move.j] = 2;
+        chosenMoves.push([move.i][move.j]);
+        console.log("fixed best move");
     }
-}
+}*/
 
 function miniMax(tmp_field, player)
 {
@@ -373,9 +415,24 @@ function reloadPage()
 
 function winnerAlert(field)
 {
+    var btn = document.getElementsByClassName("gamebtn");
     if(validate(field) == 1)
     {
         alert("You´ve Won!");
+        for (let index = 0; index < btn.length; index++)
+        {
+            const i = btn[index];
+            i.disabled = true;
+        }
+    }
+    else if(validate(field) == 0)
+    {
+        alert("Tie!");
+        for (let index = 0; index < btn.length; index++)
+        {
+            const i = btn[index];
+            i.disabled = true;
+        }
     }
 }
 

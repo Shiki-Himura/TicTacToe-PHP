@@ -8,12 +8,12 @@ if (mysqli_connect_error())
     exit;
 }
 
-$fielddata = $_REQUEST['field'];
-$state = str_split($fielddata);
+$fieldData = $_REQUEST['field'];
+$stateData = str_split($fieldData);
 
-$weight = "";
+$stateString = "";
 
-foreach($state as $element)
+foreach($stateData as $element)
 {
     if($element == ",")
     {
@@ -21,11 +21,11 @@ foreach($state as $element)
     }
     else
     {
-        $weight .= $element;
+        $stateString .= $element;
     }
 }
 
-$sql_query = 'SELECT `BoardWeight` FROM `game_state` WHERE `State` = "'.$weight.'"';
+$sql_query = 'SELECT `BoardWeight` FROM `game_state` WHERE `State` = "'.$stateString.'"';
 
 $result = $connection->query($sql_query);
 

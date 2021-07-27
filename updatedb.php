@@ -7,6 +7,7 @@ if(mysqli_connect_error())
     echo "Database connection failed";
     exit;
 }
+
 $statedata = $_REQUEST['field'];
 $statearray = str_split($statedata);
 
@@ -21,20 +22,9 @@ foreach($statearray as $element)
     }
 }
 
-foreach ($statearray as $key => $value)
-{
-    if($value == "0")
-    {
-        $weight .= "5";
-    }
-    elseif($value == "1" || $value == "2")
-    {
-        $weight .= "0";
-    }
-}
+$sql_query = 'UPDATE `game_state` SET `BoardWeight`="'.$weight.'" WHERE `State` = "'.$state.'"';
 
 
-$sql_query = "INSERT INTO `game_state`(`State`, `BoardWeight`) VALUES ('$state','$weight')";
-$result = $connection->query($sql_query);
+
 
 ?>
