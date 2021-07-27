@@ -1,4 +1,4 @@
-// TODO - implement "let computer choose a move by randomly choosing a move from a list of moves"
+// TODO - implement weight change
 
 var field = [
     [0,0,0],
