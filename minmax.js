@@ -120,10 +120,9 @@ function buttonClick(e, x, y)
     GetWeight(concatField(field));    
     InitializeMoveList(weight);
     MakeMove(field);
-    console.log(chosenMoves);
-    console.log(weight);
+    //console.log(chosenMoves);
     Replace(weight);
-    console.log(stateWeight);
+    //console.log(stateWeight);
 
     //bestMove(field);
     winnerAlert(field);
@@ -192,12 +191,13 @@ function sendArrayElement(array1)
 
 function Replace(array)
 {
-    var temp = "";
+    var temp = [];
     for(var i = 0; i < array.length; i++)
     {
-        temp += (array[i].replaceAll(/,/g, "").replaceAll(/" "/g, ""));
+        temp.push(parseInt(array[i]));
     }
     stateWeight.push(temp);
+    console.log(stateWeight);
 }
 
 function MakeMove(tmp_field)
@@ -424,6 +424,7 @@ function winnerAlert(field)
             const i = btn[index];
             i.disabled = true;
         }
+
     }
     else if(validate(field) == 0)
     {
