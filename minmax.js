@@ -26,6 +26,7 @@ var difficulty;
 var response = "";
 var stateWeight = [];
 var updatedWeight = [];
+var winner = 0;
 //var stateset = new Set();
 //var uniquestates = [];
 //var tempstring = "";
@@ -111,24 +112,16 @@ function getButtons()
 }
 
 function buttonClick(e, x, y)
-{
-    var player_one = true;
+{    
     e.target.textContent = "X";
     e.target.disabled = true;
-    field[x][y] = 1;    
-    player_one = false;
+    field[x][y] = 1;
     
-    GetWeight(concatField(field));    
+    GetWeight(concatField(field));
     InitializeMoveList(weight);
     MakeMove(field);
-    //console.log(chosenMoves);
-    Replace(weight);
-    //console.log(stateWeight);
-
-    //bestMove(field);
-    winnerAlert(field);
     render(field);
-    //validate(field);
+    winnerAlert(field);
 }
 
 function getBoardState()
@@ -165,7 +158,7 @@ function sendData()
 
 function UpdateData()
 {
-    stateset.forEach(function(val)
+    stateset.forEach(function(fieldState, fieldWeight)
     {
         const xmlhttp = new XMLHttpRequest();
     
@@ -176,8 +169,9 @@ function UpdateData()
                 console.log(this.responseText);
             }
         }
-        var value = val;
-        xmlhttp.open("GET", "updatedb.php?field="+value, false);
+        var value = fieldState;
+        var value2 = fieldWeight;
+        xmlhttp.open("GET", "updatedb.php?field="+value+"weight="+value2, false);
         xmlhttp.send();
     })
 }
@@ -190,15 +184,39 @@ function sendArrayElement(array1)
     }
 }
 
-function Replace(array)
+function IncreaseWeight(array)
 {
     var temp = [];
+    var str = array;
     for(var i = 0; i < array.length; i++)
     {
-        temp.push(parseInt(array[i]));
+        temp = str.split("");
+        if(temp[i] != 0)
+        {
+            temp[i] = parseInt(str[i]) + 1;
+            str[i] = temp[i].toString();
+        }
+        temp = str.join("");
     }
-    stateWeight.push(temp);
-    console.log(stateWeight); // weight off current board, after player did their move
+    console.log(temp);
+    //stateWeight.push(temp); // weight of current board, after player did their move
+}
+
+function DecreaseWeight(array)
+{
+    var temp = [];
+    var str = array;
+    for(var i = 0; i < array.length; i++)
+    {
+        temp = str.split("");
+        if(temp[i] != 0)
+        {
+            temp[i] = parseInt(str[i]) + 1;
+            str[i] = temp[i].toString();
+        }
+        temp = str.join("");
+    }
+    //stateWeight.push(temp); // weight of current board, after player did their move
 }
 
 function MakeMove(tmp_field)
@@ -207,8 +225,8 @@ function MakeMove(tmp_field)
     if(validate(tmp_field) == 2)
     {
         tmp_field[rndMove.i][rndMove.j] = 2;
-        chosenMoves.push(concatField(tmp_field));        
-    }    
+        chosenMoves.push(concatField(tmp_field));
+    }
 }
 
 /*function bestMove(tmp_field)
@@ -368,9 +386,14 @@ function validate(tmp_field)
 {
     for(var i = 0; i < 3; i++)
     {
-        if(tmp_field[i][0] != 0 && equals3(tmp_field[i][0], tmp_field[i][1], tmp_field[i][2])
-        || tmp_field[0][i] != 0 && equals3(tmp_field[0][i], tmp_field[1][i], tmp_field[2][i]))
+        if(tmp_field[i][0] != 0 && equals3(tmp_field[i][0], tmp_field[i][1], tmp_field[i][2]))
         {
+            winner = tmp_field[i][0];
+            return 1;
+        }
+        else if(tmp_field[0][i] != 0 && equals3(tmp_field[0][i], tmp_field[1][i], tmp_field[2][i]))
+        {
+            winner = tmp_field[0][i];
             return 1;
         }
     }
@@ -378,6 +401,7 @@ function validate(tmp_field)
     if(tmp_field[0][0] != 0 && equals3(tmp_field[0][0], tmp_field[1][1], tmp_field[2][2])
     || tmp_field[0][2] != 0 && equals3(tmp_field[0][2], tmp_field[1][1], tmp_field[2][0]))
     {
+        winner = tmp_field[1][1];
         return 1;
     }
     
@@ -396,6 +420,7 @@ function validate(tmp_field)
 
     if(empty_field == false)
     {
+        winner = 3;
         return 0;
     }
     else
@@ -414,26 +439,33 @@ function reloadPage()
     window.location.reload();
 }
 
-function winnerAlert(field)
+function winnerAlert()
 {
-    var btn = document.getElementsByClassName("gamebtn");
-    if(validate(field) == 1)
+    if(winner == 1)
     {
-        alert("You´ve Won!");
-        for (let index = 0; index < btn.length; index++)
-        {
-            const i = btn[index];
-            i.disabled = true;
-        }
+        alert("Player 1 has Won!");
+        DisableButtons();
     }
-    else if(validate(field) == 0)
+    else if(winner == 2)
+    {
+        alert("Player 2 has Won!");
+        DisableButtons();
+    }
+    else if(winner == 3)
     {
         alert("Tie!");
-        for (let index = 0; index < btn.length; index++)
-        {
-            const i = btn[index];
-            i.disabled = true;
-        }
+        DisableButtons();
+    }
+
+}
+
+function DisableButtons()
+{
+    var btn = document.getElementsByClassName("gamebtn");
+    for (let index = 0; index < btn.length; index++)
+    {
+        const i = btn[index];
+        i.disabled = true;
     }
 }
 
