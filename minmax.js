@@ -1,4 +1,4 @@
-// TODO - implement weight change
+// TODO - let weight change take effect after someone has won
 
 var field = [
     [0,0,0],
