@@ -36,7 +36,6 @@ var counter = 0;
 //var stateset = new Set();
 //var uniquestates = [];
 //var tempstring = "";
-//sendData();
 
 function GetRandomMove(moveList)
 {
