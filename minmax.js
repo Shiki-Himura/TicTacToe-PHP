@@ -7,26 +7,32 @@ var field = [
 ]
 
 var moveArray = [
-    {i:0, j:0},
-    {i:0, j:1},
-    {i:0, j:2},
-    {i:1, j:0},
-    {i:1, j:1},
-    {i:1, j:2},
-    {i:2, j:0},
-    {i:2, j:1},
-    {i:2, j:2}
+    {ID:0, i:0, j:0},
+    {ID:1, i:0, j:1},
+    {ID:2, i:0, j:2},
+    {ID:3, i:1, j:0},
+    {ID:4, i:1, j:1},
+    {ID:5, i:1, j:2},
+    {ID:6, i:2, j:0},
+    {ID:7, i:2, j:1},
+    {ID:8, i:2, j:2}
 ];
-
+var temp = 0;
+var tempArr = [];
+var dataArray = [];
 var chosenMoves = [];
 var moveList = [];
 var weight = [];
+var state = [];
+var cpuWeight = [];
 var values = [];
 var difficulty;
 var response = "";
+var CPUresponse = [];
 var stateWeight = [];
 var updatedWeight = [];
 var winner = 0;
+var counter = 0;
 //var stateset = new Set();
 //var uniquestates = [];
 //var tempstring = "";
@@ -52,7 +58,7 @@ function InitializeMoveList(weight)
             moveList.push(moveArray[a]);
         }
         a++;
-    }    
+    }
     return moveList;
 }
 
@@ -70,6 +76,22 @@ function GetWeight(field)
     }
     xmlhttp.open("GET", "computermove.php?field="+field, false);
     xmlhttp.send();
+}
+
+function GetCPUWeight(field)
+{
+    const xmlhttp1 = new XMLHttpRequest();
+    
+    xmlhttp1.onload = function()
+    {
+        if (xmlhttp1.readyState==4 && xmlhttp1.status==200)
+        {
+            CPUresponse = this.responseText;
+            cpuWeight.push(CPUresponse.split(""));            
+        }
+    }
+    xmlhttp1.open("GET", "computermove.php?field="+field, false);
+    xmlhttp1.send();
 }
 
 function checkUnique(array)
@@ -112,7 +134,7 @@ function getButtons()
 }
 
 function buttonClick(e, x, y)
-{    
+{
     e.target.textContent = "X";
     e.target.disabled = true;
     field[x][y] = 1;
@@ -120,8 +142,27 @@ function buttonClick(e, x, y)
     GetWeight(concatField(field));
     InitializeMoveList(weight);
     MakeMove(field);
+    winnerAlert(validate(weight));
+
+    dataArray.push({
+        State : state[state.length-1],
+        Move : chosenMoves[chosenMoves.length-1],
+        Weight : weight
+    });
+    tempArr = dataArray[dataArray.length-1].Move["ID"];
+    
+    //console.log(dataArray);
+    //console.log(tempArr);
+    temp = dataArray[dataArray.length-1].Weight[tempArr];
+    var newWeight = parseInt(temp) + 1;
+    temp = newWeight.toString();
+    dataArray[dataArray.length-1].Weight.splice(tempArr, 1, temp);
+
+    //console.log(temp);
+
+    console.log(dataArray[dataArray.length-1].Weight);
+    
     render(field);
-    winnerAlert(field);
 }
 
 function getBoardState()
@@ -186,47 +227,25 @@ function sendArrayElement(array1)
 
 function IncreaseWeight(array)
 {
-    var temp = [];
-    var str = array;
-    for(var i = 0; i < array.length; i++)
-    {
-        temp = str.split("");
-        if(temp[i] != 0)
-        {
-            temp[i] = parseInt(str[i]) + 1;
-            str[i] = temp[i].toString();
-        }
-        temp = str.join("");
-    }
-    console.log(temp);
-    //stateWeight.push(temp); // weight of current board, after player did their move
+    
 }
 
 function DecreaseWeight(array)
 {
-    var temp = [];
-    var str = array;
-    for(var i = 0; i < array.length; i++)
-    {
-        temp = str.split("");
-        if(temp[i] != 0)
-        {
-            temp[i] = parseInt(str[i]) + 1;
-            str[i] = temp[i].toString();
-        }
-        temp = str.join("");
-    }
-    //stateWeight.push(temp); // weight of current board, after player did their move
+    
 }
 
-function MakeMove(tmp_field)
+function MakeMove(field)
 {
     var rndMove = GetRandomMove(moveList);
-    if(validate(tmp_field) == 2)
+    if(validate(field) == 2)
     {
-        tmp_field[rndMove.i][rndMove.j] = 2;
-        chosenMoves.push(concatField(tmp_field));
+        state.push(concatField(field));
+        field[rndMove.i][rndMove.j] = 2;
+        chosenMoves.push(rndMove);
+        GetCPUWeight(field);
     }
+    
 }
 
 /*function bestMove(tmp_field)
@@ -441,20 +460,25 @@ function reloadPage()
 
 function winnerAlert()
 {
-    if(winner == 1)
+    if(validate(field) == 1 && winner == 1)
     {
         alert("Player 1 has Won!");
         DisableButtons();
+        GetWeight(field);
     }
-    else if(winner == 2)
+    
+    if(validate(field) == 1 && winner == 2)
     {
         alert("Player 2 has Won!");
         DisableButtons();
+        GetWeight(field);
     }
-    else if(winner == 3)
+    
+    if(validate(field) == 0 && winner == 3)
     {
         alert("Tie!");
         DisableButtons();
+        GetWeight(field);
     }
 
 }
