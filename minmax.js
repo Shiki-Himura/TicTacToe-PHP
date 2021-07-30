@@ -17,20 +17,31 @@ var moveArray = [
     {ID:7, i:2, j:1},
     {ID:8, i:2, j:2}
 ];
+
 var temp = 0;
+var newWeightPosition = temp;
+var newWeight = [];
+var cpuReaction = [];
 var tempArr = [];
 var dataArray = [];
+var allWeights = [];
+
 var chosenMoves = [];
 var moveList = [];
+
 var weight = [];
 var state = [];
 var cpuWeight = [];
+
 var values = [];
 var difficulty;
+
 var response = "";
 var CPUresponse = [];
+
 var stateWeight = [];
 var updatedWeight = [];
+
 var winner = 0;
 var counter = 0;
 //var stateset = new Set();
@@ -141,26 +152,21 @@ function buttonClick(e, x, y)
     GetWeight(concatField(field));
     InitializeMoveList(weight);
     MakeMove(field);
-    winnerAlert(validate(weight));
-
+    
     dataArray.push({
         State : state[state.length-1],
         Move : chosenMoves[chosenMoves.length-1],
         Weight : weight
     });
     tempArr = dataArray[dataArray.length-1].Move["ID"];
-    
-    //console.log(dataArray);
-    //console.log(tempArr);
     temp = dataArray[dataArray.length-1].Weight[tempArr];
-    var newWeight = parseInt(temp) + 1;
-    temp = newWeight.toString();
-    dataArray[dataArray.length-1].Weight.splice(tempArr, 1, temp);
-
-    //console.log(temp);
-
-    console.log(dataArray[dataArray.length-1].Weight);
     
+    winnerAlert(validate(weight));
+    newWeight.push((dataArray[dataArray.length-1].Weight));
+    if(winner == 1 || winner == 2 || winner == 3)
+    {
+        SetNewWeight();
+    }
     render(field);
 }
 
@@ -196,24 +202,19 @@ function sendData()
     })
 }
 
-function UpdateData()
+function UpdateData(state, weight)
 {
-    stateset.forEach(function(fieldState, fieldWeight)
-    {
-        const xmlhttp = new XMLHttpRequest();
+    const xmlhttp = new XMLHttpRequest();
     
-        xmlhttp.onreadystatechange = function()
+    xmlhttp.onreadystatechange = function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
         {
-            if (xmlhttp.readyState==4 && xmlhttp.status==200)
-            {
-                console.log(this.responseText);
-            }
+            console.log(this.responseText);
         }
-        var value = fieldState;
-        var value2 = fieldWeight;
-        xmlhttp.open("GET", "updatedb.php?field="+value+"weight="+value2, false);
-        xmlhttp.send();
-    })
+    }
+    xmlhttp.open("GET", "updatedb.php?state="+state+"&weight="+weight, false);
+    xmlhttp.send();
 }
 
 function sendArrayElement(array1)
@@ -224,22 +225,34 @@ function sendArrayElement(array1)
     }
 }
 
-function IncreaseWeight(array)
+function SetNewWeight()
 {
-    
+    for(var i = 0; i < state.length; i++)
+    {
+        var stateOut = state[i];
+        var weightOut = newWeight[i];
+        var reaction = cpuReaction[i];
+
+        if(winner == 1)
+        {
+            var myNum = (parseInt(weightOut[parseInt(reaction)]));
+            weightOut[parseInt(reaction)] = myNum - 1;
+        }
+        else if(winner == 2)
+        {
+            var myNum = (parseInt(weightOut[parseInt(reaction)]));
+            weightOut[parseInt(reaction)] = myNum + 1;
+        }
+        UpdateData(stateOut, weightOut);
+    }
 }
 
-function DecreaseWeight(array)
-{
-    
-}
 
 function MakeMove(field)
 {
     var rndMove = GetRandomMove(moveList);
     if(validate(field) == 2)
     {
-        state.push(concatField(field));
         field[rndMove.i][rndMove.j] = 2;
         chosenMoves.push(rndMove);
         GetCPUWeight(field);
@@ -461,25 +474,42 @@ function winnerAlert()
 {
     if(validate(field) == 1 && winner == 1)
     {
+        allWeights.push(weight);
+        cpuReaction.push(dataArray[dataArray.length-1].Move["ID"]);
+        state.push(concatField(field));
+
         alert("Player 1 has Won!");
         DisableButtons();
         GetWeight(field);
     }
-    
-    if(validate(field) == 1 && winner == 2)
+    else if(validate(field) == 1 && winner == 2)
     {
+        allWeights.push(weight);
+        cpuReaction.push(dataArray[dataArray.length-1].Move["ID"]);
+        state.push(concatField(field));
+
         alert("Player 2 has Won!");
         DisableButtons();
         GetWeight(field);
     }
-    
-    if(validate(field) == 0 && winner == 3)
+    else if(validate(field) == 0 && winner == 3)
     {
+        allWeights.push(weight);
+        cpuReaction.push(dataArray[dataArray.length-1].Move["ID"]);
+        state.push(concatField(field));
+
         alert("Tie!");
         DisableButtons();
         GetWeight(field);
     }
-
+    else
+    {
+        allWeights.push(weight);
+        cpuReaction.push(dataArray[dataArray.length-1].Move["ID"]);
+        state.push(concatField(field));
+    }
+    
+    
 }
 
 function DisableButtons()

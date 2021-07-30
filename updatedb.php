@@ -8,9 +8,11 @@ if(mysqli_connect_error())
     exit;
 }
 
-$statedata = $_REQUEST['field'];
+$statedata = $_REQUEST['state'];
 $weightdata = $_REQUEST['weight'];
+
 $statearray = str_split($statedata);
+$weightarray = str_split($weightdata);
 
 $state = "";
 $weight = "";
@@ -23,11 +25,19 @@ foreach($statearray as $element)
     }
 }
 
+foreach($weightarray as $element)
+{
+    if($element != ",")
+    {
+        $weight .= $element;
+    }
+}
 
 
 $sql_query = 'UPDATE `game_state` SET `BoardWeight`="'.$weight.'" WHERE `State` = "'.$state.'"';
 
 $result = $connection->query($sql_query);
 
+var_dump($weight);
 
 ?>
