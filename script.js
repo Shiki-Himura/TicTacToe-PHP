@@ -9,9 +9,6 @@ var playField = [
 var playerOne = true;
 
 function buttonClick(e, x, y){
-    console.log(e);
-    console.log(x,y);
-    
 
     if(playerOne)
     {

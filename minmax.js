@@ -247,7 +247,6 @@ function SetNewWeight()
     }
 }
 
-
 function MakeMove(field)
 {
     var rndMove = GetRandomMove(moveList);
@@ -274,7 +273,7 @@ function MakeMove(field)
             {
                 tmp_field[i][j] = 2;                
 
-                var score = miniMax(tmp_field, true);                
+                var score = miniMax(tmp_field, true);
                 if(score < bestScore)
                 {
                     bestScore = score;
